@@ -1,38 +1,77 @@
-.App {
-  text-align: center;
+*{
+  box-sizing: border-box;
+  /* margin: 0px; */
+  /* padding: 0px; */
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+div {
+  border-width: 4px;
+  border-color: red;
+  border-style: solid;
+
+  padding: 3px;
+
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
+.Self-Board{
+  border-color:greenyellow;
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  height: auto;
+  padding: 0px auto;
+  margin: 0px auto;
+
+  display: grid;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  grid-template-columns: min-content min-content min-content min-content min-content min-content min-content;
+
+  
 }
 
-.App-link {
-  color: #61dafb;
+
+
+.Self-Board-Slot{
+  justify-self: center;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.Self-ColButton{
+width: 80px;
+height: 50px;
+margin: 0px 8px;
+background-color: cadetblue;
+
+border-color: black;
+border-style: solid;
+border-width: 8px;
+border-radius: 10px;
+
 }
+
+.Self-ArrowDown{
+  padding:0px;
+  margin: 5px auto;
+  width:0px;
+  height: 0px;
+  
+  border-top-color: black;
+  border-top-width: 20px;
+  border-top-style: solid;
+
+  border-left-color: transparent;
+  border-left-width: 10px;
+  border-left-style: solid;
+
+  border-right-color: transparent;
+  border-right-width: 10px;
+  border-right-style: solid;
+
+  border-bottom-color: red ;
+  border-bottom-width: 0px;
+  border-bottom-style: solid;
+}
+
+
+
+
+
+
+
