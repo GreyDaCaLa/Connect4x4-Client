@@ -1,9 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react'
-import queryString from 'query-string'
 import io from 'socket.io-client'
 
 const SocketContext = React.createContext();
-// const ENDPOINT = 'https://uno-online-multiplayer.herokuapp.com/'
+const ENDPOINT = (false)?'https://connect4x4-server.herokuapp.com/':"http://localhost:5000";
 
 export function useSocket() {
     return useContext(SocketContext);
@@ -21,7 +20,7 @@ export function SocketProvider({id,children}){
             "transports" : ["websocket"]
         }
         
-        const newSocket = io.connect("http://localhost:5000",connectionOptions);
+        const newSocket = io.connect(ENDPOINT,connectionOptions);
         // console.log("newsocket=====",newSocket);
         // newSocket.emit("storeClientInfo", id);
         // newSocket.emit("join", id);
