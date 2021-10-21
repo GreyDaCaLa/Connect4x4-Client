@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import io from 'socket.io-client'
 
 const SocketContext = React.createContext();
-const ENDPOINT = (false)?'https://connect4x4-server.herokuapp.com/':"http://localhost:5000";
+const ENDPOINT = (true)?'https://connect4x4-server.herokuapp.com/':"http://localhost:5000";
 
 export function useSocket() {
     return useContext(SocketContext);

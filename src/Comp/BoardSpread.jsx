@@ -57,23 +57,23 @@ function BoardSpread() {
     switch (slot[1]) {
       case '-':
         return "white";
-        break;
+        // break;
       case '1':
         return colorP1;
-        break;
+        // break;
       case '2':
         return colorP2;
-        break;
+        // break;
       case '3':
         return colorP3;
-        break;
+        // break;
       case '4':
         return colorP4;
-        break;
+        // break;
     
       default:
         return "black"
-        break;
+        // break;
     }
 
 
