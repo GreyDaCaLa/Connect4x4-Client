@@ -10,27 +10,54 @@ export function useSocket() {
 
 export function SocketProvider({id,children}){
     const [socket,setSocket] =useState();
-    const [roomCode,setRoomCode] =useState();
+    const [redirectNum,setRedirectNum] = useState(0)
+    const [plyrInfo,setPlyrInfo] = useState();
+    const [gameRoom,setGameRoom] = useState();
     
     useEffect(()=>{
+        console.log("#####-----##### SocketProvider 1 ")
+        // console.log("socket: ",socket)
+        if(socket){
+            socket.on('LoginUser_Ack',(user)=>{
+                console.log("Saw A LoginUser_Ack")
+                setPlyrInfo(user)
+            });
+
+
+            socket.on('JoinGame_Ack',(roomName)=>{setGameRoom(roomName)})
+        }
+    },[socket])
+
+    //making connection
+    useEffect(()=>{
+        console.log("#####-----##### SocketProvider 2 ")
+        
         const connectionOptions =  {
             "forceNew" : true,
-            "reconnectionAttempts": "Infinity", 
+            "reconnectionAttempts": "5", 
             "timeout" : 10000,                  
             "transports" : ["websocket"]
         }
-        
         const newSocket = io.connect(ENDPOINT,connectionOptions);
-        // console.log("newsocket=====",newSocket);
-        // newSocket.emit("storeClientInfo", id);
-        // newSocket.emit("join", id);
         setSocket(newSocket);
+    
+
 
         return () => newSocket.close() //this is the clean up function
     },[id])
 
+    const value={
+        socket,
+        redirectNum,
+        setRedirectNum,
+        plyrInfo,
+        setPlyrInfo,
+        gameRoom,
+        setGameRoom
+    }
+
     return (
-        <SocketContext.Provider value={socket}>
+        <SocketContext.Provider value={value}>
             {children}
         </SocketContext.Provider>
     )

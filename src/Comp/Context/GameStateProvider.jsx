@@ -1,10 +1,6 @@
 import React, { useContext, useEffect, useState } from "react"
 import { useSocket } from "./SocketProvider";
 
-
-
-
-
 const GameStateContext = React.createContext();
 
 export function useGameState() {
@@ -13,94 +9,25 @@ export function useGameState() {
 
 
 export function GameStateProvider({children}) {
-  const socket = useSocket();
+    const  {socket, plyrInfo, gameRoom, setGameRoom,setPlyrInfo} = useSocket();
     // gameBoard [](column) [](row)
-    const [gameBoard,setGameBoard] = useState([
-        ["--", "--", "--", "--", "--", "--"],
-        ["--", "--", "--", "--", "--", "--"],
-        ["--", "--", "--", "--", "--", "--"],
-        ["--", "--", "--", "--", "--", "--"],
-        ["--", "--", "--", "--", "--", "--"],
-        ["--", "--", "--", "--", "--", "--"],
-        ["--", "--", "--", "--", "--", "--"]
-    ])
-    const [countDoubleChip,setCountDoubleChip] =useState(2)
-    const [nextMove,setNextMove] = useState(1);
+    const [gameBoard,setGameBoard] = useState();
+    const [countDO,setCountDO] = useState();
+    const [gMode,setGMode] = useState("4x4")
+    const [currTurn,setCurrTurn] = useState();
+    const [winner,setWinner] = useState(null);
+    const [allPlayers,setAllPlayers] = useState(); // all players in game = PsGame
+    const [playerNum,setPlayerNum] = useState(0); // player number for current game EX: Player(1 or 2 or 3 or 4)
+    const [chip,setChip]=useState("DO"); // DO IN OT
 
-    const playerMarker=nextMove; //place holder until i figure out who is playing
 
-    function handleMove({col, chip}) {
+    function handleMove(newBoard,winner,nextTurn) {
       console.log("HEY YO WE MADE IT handleMove!!!!!")
-      console.log(`we got col:${col} | chip: ${chip}`)
-        //Hover above board
-        //
-        let gb=[...gameBoard];
-        let land = "";
-    
-        for (let i = 0; i < gb[col].length; i++) {
-          console.log(`col: ${col} |i:${i} =`, gb[col][i], chip);
-    
-          if (gb[col][i][0] !== "-") {
-            if (chip[0] !== "-") {
-              if (chip[1] !== "-") {
-                gb[col][i - 1] = chip;
-                console.log("land:", chip);
-              } else {
-                land = chip[0] + gb[col][i - 1][1];
-                gb[col][i - 1] = land;
-                console.log("land:", land);
-              }
-              
-              //return gb;
-              setGameBoard(gb);
-              break;
-            }
-          }
-    
-          if (gb[col][i][1] !== "-") {
-            if (chip[1] !== "-") {
-              if (chip[0] !== "-") {
-                gb[col][i - 1] = chip;
-                console.log("land:", chip);
-              } else {
-                land = gb[col][i - 1][0] + chip[1];
-                console.log("land:", land);
-                gb[col][i - 1] = land;
-              }
-    
-              //return gb;
-              setGameBoard(gb);
-              break;
-            }
-          }
-    
-          if (i === gb[col].length - 1) {
-            console.log("in bottom row");
-            if (gb[col][i][0] === "-" && gb[col][i][1] === "-") {
-              land = chip;
-              console.log("both bottom");
-            } else if (chip[0] !== "-") {
-              land = chip[0] + gb[col][i][1];
-              console.log("back bottom");
-            } else if (gb[col][i][1] === "-") {
-              land = gb[col][i][0] + chip[1];
-              console.log("Front bottom");
-            }
-            console.log("land:", land);
-            gb[col][i] = land;
 
-            //return gb;
-            setGameBoard(gb);
-            break;
-          }
-        }
-        console.log("RESULT BOARD=========######");
-        printLog_GameBoard(gb);
-        if(playerMarker==4){
-          setNextMove(1);
-        }else{
-          setNextMove(playerMarker+1);
-        }
+      setGameBoard(newBoard);
+      setWinner(winner);
+      setCurrTurn(nextTurn);
+
     }
 
     function sendMove(col, chipStyleText){
@@ -108,33 +35,74 @@ export function GameStateProvider({children}) {
 
       let chip;
 
-      switch(chipStyleText){
-        case "IN":
-          chip='-'+playerMarker
-          break;
-        case "OT":
-          chip=playerMarker+'-'
-          break;
-        case "DO":
-          chip=(''+playerMarker)+(playerMarker+'')
-          break;
+      if(playerNum===currTurn){
+
+        switch(chipStyleText){
+          case "IN":
+            chip='-'+playerNum
+            break;
+          case "OT":
+            chip=playerNum+'-'
+            break;
+          case "DO":
+            chip=(''+playerNum)+(playerNum+'')
+            break;
+        }
+  
+        socket.emit("SEND_Move", gameRoom, {col,chip});
+  
+
+      }else{
+        alert("YOU CAN NOT PLAY\nIT IS NOT YOUR TURN")
       }
 
-
-      socket.emit("send-Move", {col,chip});
 
 
 
     }
 
+    function handelFullContentRES(fc){
+      console.log("HANDELING FULL CONTENT DUMP") //only meant to happen when first joining or re-joining a game
+      // console.log("the game content",fc)
+      setGMode(fc.GameMode)
+      setAllPlayers(fc.players)
+      setCurrTurn(fc.currTurn)
+      setCountDO(fc.CountDO)
+      setWinner(fc.winner)
+      setGameBoard(fc.gameBoard)
+    }
+
 
     useEffect(()=>{
-      if(socket == null)return
+      if(socket){
+        socket.on('REC_Move_Result',(newBoard,winner,nextTurn)=>{handleMove(newBoard,winner,nextTurn)});
 
-      socket.on('recieve-Move', handleMove)
+        socket.on('newPlayer_Joining',(newPlayerJoining)=>{
+          console.log("New list of players after someone joined the room",newPlayerJoining);
+          setAllPlayers(newPlayerJoining)
+        });
 
-      return ()=> socket.off();
-  }, [socket,handleMove])
+        socket.on('AssignPlayer_Number', (num)=>{setPlayerNum(num)})
+
+        socket.on("gameRES_FullContent", (fc)=>{handelFullContentRES(fc)});
+
+        if(socket.connected && gameRoom && plyrInfo){
+          if(!playerNum){
+            socket.emit("Join_Game",plyrInfo.name,gameRoom,(error)=>{alert(error)})
+          }
+
+
+          if(!gameBoard){
+            socket.emit("gameRQ_FullContent", gameRoom, (error)=>{alert(error)} );
+          }
+        }
+
+  
+        return ()=> socket.off();
+      }
+
+    // }, [socket,handleMove])
+    }, [socket,handleMove,setPlayerNum,handelFullContentRES])
 
 
 
@@ -249,9 +217,15 @@ export function GameStateProvider({children}) {
 
     const value={
         sendMove,
+        setChip,
         gameBoard,
-        nextMove,
-        countDoubleChip
+        currTurn,
+        winner,
+        allPlayers,
+        playerNum,
+        countDO,
+        chip,
+        gMode
     }
 
 
@@ -263,71 +237,3 @@ export function GameStateProvider({children}) {
 }
 
 
-
-
-
-/*
-
-    function testingboardlogic(gameBoard) {
-      console.log("######----");
-      gameBoard = handleMove(0, "-A", gameBoard);
-      printLog_GameBoard(gameBoard);
-  
-      console.log("######----");
-      gameBoard = handleMove(0, "-A", gameBoard);
-      printLog_GameBoard(gameBoard);
-  
-      console.log("######----");
-      gameBoard = handleMove(0, "-A", gameBoard);
-      printLog_GameBoard(gameBoard);
-  
-      console.log("######----");
-      gameBoard = handleMove(0, "A-", gameBoard);
-      printLog_GameBoard(gameBoard);
-  
-      console.log("######----");
-      gameBoard = handleMove(0, "A-", gameBoard);
-      printLog_GameBoard(gameBoard);
-  
-      console.log("######----");
-      gameBoard = handleMove(0, "AA", gameBoard);
-      printLog_GameBoard(gameBoard);
-  
-      console.log("######----");
-      gameBoard = handleMove(0, "-A", gameBoard);
-      printLog_GameBoard(gameBoard);
-  
-      console.log("######----");
-      gameBoard = handleMove(0, "A-", gameBoard);
-      printLog_GameBoard(gameBoard);
-  
-      console.log("######----");
-      gameBoard = handleMove(0, "AA", gameBoard);
-      printLog_GameBoard(gameBoard);
-  
-      console.log("######----");
-      gameBoard = handleMove(1, "-B", gameBoard);
-      printLog_GameBoard(gameBoard);
-  
-      console.log("######----");
-      gameBoard = handleMove(1, "-B", gameBoard);
-      printLog_GameBoard(gameBoard);
-  
-      console.log("######----");
-      gameBoard = handleMove(1, "-B", gameBoard);
-      printLog_GameBoard(gameBoard);
-  
-      console.log("######----");
-      gameBoard = handleMove(1, "BB", gameBoard);
-      printLog_GameBoard(gameBoard);
-  
-      console.log("######----");
-      gameBoard = handleMove(1, "B-", gameBoard);
-      printLog_GameBoard(gameBoard);
-  
-      console.log("######----");
-      gameBoard = handleMove(1, "B-", gameBoard);
-      printLog_GameBoard(gameBoard);
-    }
-
-*/ 
