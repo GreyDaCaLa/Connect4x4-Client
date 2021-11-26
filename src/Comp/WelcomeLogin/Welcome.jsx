@@ -389,9 +389,18 @@ function Welcome() {
     document.getElementById("CreateUser_UserName_Input").value = "";
     document.getElementById("CreateUser_Password_Input").value = "";
 
-    socket.emit("Create_User", createUserName, createPassword, (error) => {
-      alert(error);
-    });
+    if(createUserName){
+      if(createPassword){
+        socket.emit("Create_User", createUserName, createPassword, (error) => {
+          alert(error);
+        });
+
+      }
+      alert("password was empty")
+    }
+    else{
+      alert("username was empty")
+    }
   };
 
   const handleJoinGameFromList = (gName) => {
@@ -406,7 +415,13 @@ function Welcome() {
     let searchName = document.getElementById("Search_Game_Input").value;
     document.getElementById("Search_Game_Input").value = "";
 
-    socket.emit("GameRQ_DoesExist", searchName, (error) => {alert(error)});
+    if(searchName){
+      socket.emit("GameRQ_DoesExist", searchName, (error) => {alert(error)});
+    }
+    else{
+      alert("search was empty")
+    }
+
   };
 
   const handleCreateGameSubmit = () => {

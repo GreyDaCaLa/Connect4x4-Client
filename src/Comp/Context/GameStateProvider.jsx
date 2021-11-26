@@ -19,6 +19,7 @@ export function GameStateProvider({children}) {
     const [allPlayers,setAllPlayers] = useState(); // all players in game = PsGame
     const [playerNum,setPlayerNum] = useState(0); // player number for current game EX: Player(1 or 2 or 3 or 4)
     const [chip,setChip]=useState("DO"); // DO IN OT
+    const [oneTime,setOneTime]=useState(false)
 
 
     function handleMove(newBoard,winner,nextTurn) {
@@ -93,7 +94,11 @@ export function GameStateProvider({children}) {
 
 
           if(!gameBoard){
-            socket.emit("gameRQ_FullContent", gameRoom, (error)=>{alert(error)} );
+            if(!oneTime){
+              setOneTime(true)
+              socket.emit("gameRQ_FullContent", gameRoom, (error)=>{alert(error)} );
+
+            }
           }
         }
 
