@@ -10,7 +10,7 @@ export function useSocket() {
 
 export function SocketProvider({id,children}){
     const [socket,setSocket] =useState();
-    const [redirectNum,setRedirectNum] = useState(0)
+    const [redirectNum,setRedirectNum] = useState(0);
     const [plyrInfo,setPlyrInfo] = useState();
     const [gameRoom,setGameRoom] = useState();
     

@@ -245,25 +245,34 @@ function Welcome() {
               <h2>Create Room:</h2>
             </div>
 
-            <div className="col-md-6 col-sm-12 mt-1 mb-1">
+            <div className="row col-md-6 col-12 mt-1 mb-1">
+              <div>
               <label id="Create_Room_Label" className="me-3 mb-2">GameName:</label>
               <input
                 type="text"
                 id="Create_Room_Input_Name"
                 placeholder="Name"
               />
+              </div>
 
-              <label id="Create_Room_Labelreg" className="me-3 mb-2">Reg:</label>
+              <div>
+              <label id="Create_Room_Labelreg" className="me-1 mb-2">Reg:</label>
               <input
                 type="checkbox" id="Create_Room_Input_ModeREG"
                 onClick={()=>{modeCheckBoxControlReg()}}
               />
-
-              <label id="Create_Room_Label4x4" className="me-3 mb-2">4x4:</label>
+              <label id="Create_Room_Label4x4" className="ms-3 me-1 mb-2">4x4:</label>
               <input
                 type="checkbox" id="Create_Room_Input_Mode4x4"
                 onClick={()=>{modeCheckBoxControl4x4()}}
               />
+
+              </div>
+
+
+
+
+
             </div>
 
             <div className="col-md-2 col-sm-12">
@@ -493,7 +502,7 @@ function Welcome() {
 
       
 
-      <div id="WelcomeSpacerOR" className="Self-WelcomeSpacerOR">
+      {/* <div id="WelcomeSpacerOR" className="Self-WelcomeSpacerOR">
         --OR--
       </div>
 
@@ -515,7 +524,7 @@ function Welcome() {
             PLAY!!
           </button>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }
