@@ -177,7 +177,7 @@ function Welcome() {
 
           <h4>--Games Your A Part of-- </h4>
           <div id="ThePlayersRooms" className="row p-3 Self-RoomCardCont">
-            {console.log("the problamatic PlayerInfo",plyrInfo)}
+            {/* {console.log("the problamatic PlayerInfo",plyrInfo)} */}
             {
               (plyrInfo.rooms.length == 0)?
                 <div className="border border-3 rounded-pill border-dark">
@@ -185,7 +185,7 @@ function Welcome() {
                 </div>
               :
                 plyrInfo.rooms.map((room) => {
-                  console.log(room)
+                  // console.log(room)
                   return(
                     <div
                       key={`roomname-${room.obj.name}`}
@@ -311,7 +311,7 @@ function Welcome() {
       });
               
       socket.on('Up_RES',(user)=>{
-        console.log("###########s##Saw a updateplayer info response")
+        // console.log("###########s##Saw a updateplayer info response")
         setGameRoom(undefined);
         setPlyrInfo(user);
     });
@@ -395,8 +395,9 @@ function Welcome() {
           alert(error);
         });
 
+      }else{
+        alert("password was empty")
       }
-      alert("password was empty")
     }
     else{
       alert("username was empty")
@@ -404,14 +405,14 @@ function Welcome() {
   };
 
   const handleJoinGameFromList = (gName) => {
-    console.log("Joining Game: ",gName)
+    // console.log("Joining Game: ",gName)
     handleRedirectToGame(gName)
     // socket.emit("Join_Game", plyrInfo.name, gName,  (error) => {alert(error)});
 
   };
 
   const handleJoinGameFromSearch= () => {
-    console.log("handleJoinGameFromSearch");
+    // console.log("handleJoinGameFromSearch");
     let searchName = document.getElementById("Search_Game_Input").value;
     document.getElementById("Search_Game_Input").value = "";
 
@@ -474,7 +475,7 @@ function Welcome() {
   };
 
   const handleRedirectToGame = (ele) => {
-    console.log("handleRedirectToGame", ele)
+    // console.log("handleRedirectToGame", ele)
     // setGameReady(ele);
     setGameRoom(ele);
   };

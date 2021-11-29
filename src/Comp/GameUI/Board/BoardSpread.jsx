@@ -2,11 +2,11 @@ import { useEffect, useState } from "react";
 import { useGameState } from "../../Context/GameStateProvider";
 
 function BoardSpread() {
-  const { gameBoard, sendMove, chip, winner,gMode } = useGameState();
+  const { gameBoard, sendMove, chip, winner,gMode,currTurn, playerNum } = useGameState();
   const colorP1 = "red";
   const colorP2 = (gMode=="reg")?"yellow":"blue";
-  const colorP3 = "green";
-  const colorP4 = "yellow";
+  const colorP3 = "yellow";
+  const colorP4 = "green";
 
 
   let boardslots = [
@@ -172,7 +172,7 @@ function BoardSpread() {
       slot_ctx.moveTo(unit * 5, unit * 3);
       slot_ctx.arc(unit * 3, unit * 3, unit * 2, 0, 2 * Math.PI, true);
       slot_ctx.stroke();
-      slot_ctx.fillStyle = "lightblue";
+      slot_ctx.fillStyle = (currTurn == playerNum)?"grey":"lightblue";
       slot_ctx.fill();
 
       //making ring chip

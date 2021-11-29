@@ -5,10 +5,10 @@ import { useSocket } from "../Context/SocketProvider";
 
 function PlayerUI() {
   const { plyrInfo } = useSocket();
-  const { winner, playerNum, setChip, chip, gMode } = useGameState();
+  const { winner, playerNum, setChip, chip, gMode,countDO } = useGameState();
 
   const getColor = (num) => {
-    console.log("get color number is ===============", num);
+    // console.log("get color number is ===============", num);
     switch (num) {
       case 1:
         return "red";
@@ -20,6 +20,17 @@ function PlayerUI() {
         return "green";
     }
   };
+
+  const dispfullcont = () =>{
+
+    if(countDO && playerNum){
+      return `FULL - ${countDO[playerNum-1]}`
+    }
+    else{
+      return "FULL"
+    }
+
+  }
 
   function createOuterChip() {
     let boxS = 36;
@@ -236,7 +247,7 @@ function PlayerUI() {
                   <canvas id="DoubleChipButtonCanvas" className="" />
                 </div>
                 <div className="col-8 p-1">
-                  <span className="m-0">FULL</span>
+                  <span className="m-0">{dispfullcont()}</span>
                 </div>
               </div>
             </div>
@@ -248,12 +259,22 @@ function PlayerUI() {
   };
 
   const displayGameEndMessages = () => {
-    return (
-      <>
-        <h1 className="text-center">WE HAVE A WINNER</h1>
-        <h2 className="text-center">{`Player${winner} has won`}</h2>
-      </>
-    );
+    if(winner == '-'){
+      return (
+        <>
+          <h1 className="text-center">WE HAVE NO WINNER</h1>
+          <h2 className="text-center">{`-TIE GAME-`}</h2>
+        </>
+      );
+    }else{
+      return (
+        <>
+          <h1 className="text-center">WE HAVE A WINNER</h1>
+          <h2 className="text-center">{`Player${winner} has won`}</h2>
+        </>
+      );
+    }
+ 
   };
 
   useEffect(() => {

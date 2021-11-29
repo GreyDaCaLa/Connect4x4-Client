@@ -22,35 +22,71 @@ export function GameStateProvider({children}) {
     const [oneTime,setOneTime]=useState(false)
 
 
-    function handleMove(newBoard,winner,nextTurn) {
-      console.log("HEY YO WE MADE IT handleMove!!!!!")
+    function handleMove(newBoard,winner,nextTurn,DOnums) {
+      // console.log("HEY YO WE MADE IT handleMove!!!!!")
 
       setGameBoard(newBoard);
       setWinner(winner);
       setCurrTurn(nextTurn);
+      setCountDO(DOnums);
 
     }
 
     function sendMove(col, chipStyleText){
-      console.log("InsendMove===");
+      // console.log("InsendMove===");
 
       let chip;
+      let validMove = true;
 
       if(playerNum===currTurn){
 
-        switch(chipStyleText){
-          case "IN":
-            chip='-'+playerNum
-            break;
-          case "OT":
-            chip=playerNum+'-'
-            break;
-          case "DO":
-            chip=(''+playerNum)+(playerNum+'')
-            break;
+        if(chipStyleText == "IN"){
+          if(gameBoard[col][0][1] != '-'){
+            validMove = false
+            alert(`this col seems full for INNER style CHIP`)
+          }
+        }else if(chipStyleText == "OT"){
+          if(gameBoard[col][0][0] != '-'){
+            validMove = false
+            alert(`this col seems full for OUTER style CHIP`)
+          }
+        }else if(chipStyleText == "DO"){
+          if(gameBoard[col][0][0] != '-' || gameBoard[col][0][1] != '-' ){
+            validMove = false
+            alert(`this col seems full for FULL style CHIP`)
+          }
         }
+        
+        if(validMove){
+          switch(chipStyleText){
+            case "IN":
+              chip='-'+playerNum
+              break;
+            case "OT":
+              chip=playerNum+'-'
+              break;
+            case "DO":
+              chip=(''+playerNum)+(playerNum+'')
+              break;
+          }
   
-        socket.emit("SEND_Move", gameRoom, {col,chip});
+          console.log("Looking for this")
+          console.log(countDO ,chipStyleText, playerNum)
+          console.log(countDO[playerNum-1])
+          if(gMode == '4x4'){
+            if((countDO[playerNum-1]<=0) && (chipStyleText == 'DO')){
+              alert("You Can't Play Any More Doubles")
+            }else{
+              socket.emit("SEND_Move", gameRoom, {col,chip});
+            }
+  
+          }else{
+            socket.emit("SEND_Move", gameRoom, {col,chip});
+          }
+          
+        }
+
+  
   
 
       }else{
@@ -63,7 +99,7 @@ export function GameStateProvider({children}) {
     }
 
     function handelFullContentRES(fc){
-      console.log("HANDELING FULL CONTENT DUMP") //only meant to happen when first joining or re-joining a game
+      // console.log("HANDELING FULL CONTENT DUMP") //only meant to happen when first joining or re-joining a game
       // console.log("the game content",fc)
       setGMode(fc.GameMode)
       setAllPlayers(fc.players)
@@ -76,10 +112,10 @@ export function GameStateProvider({children}) {
 
     useEffect(()=>{
       if(socket){
-        socket.on('REC_Move_Result',(newBoard,winner,nextTurn)=>{handleMove(newBoard,winner,nextTurn)});
+        socket.on('REC_Move_Result',(newBoard,winner,nextTurn,DOnums)=>{handleMove(newBoard,winner,nextTurn,DOnums)});
 
         socket.on('newPlayer_Joining',(newPlayerJoining)=>{
-          console.log("New list of players after someone joined the room",newPlayerJoining);
+          // console.log("New list of players after someone joined the room",newPlayerJoining);
           setAllPlayers(newPlayerJoining)
         });
 
@@ -202,21 +238,21 @@ export function GameStateProvider({children}) {
         gb[6][5];
       let line = "\n--------------------\n";
   
-      console.log(
-        "The GameBoard",
-        "\n" +
-          row0 +
-          "\n" +
-          row1 +
-          "\n" +
-          row2 +
-          "\n" +
-          row3 +
-          "\n" +
-          row4 +
-          "\n" +
-          row5
-      );
+      // console.log(
+      //   "The GameBoard",
+      //   "\n" +
+      //     row0 +
+      //     "\n" +
+      //     row1 +
+      //     "\n" +
+      //     row2 +
+      //     "\n" +
+      //     row3 +
+      //     "\n" +
+      //     row4 +
+      //     "\n" +
+      //     row5
+      // );
       // console.log("The GameBoard","\n"+row0+line+row1+line+row2+line+row3+line+row4+line+row5)
     }
 

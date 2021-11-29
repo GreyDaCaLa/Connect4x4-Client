@@ -10,24 +10,9 @@ import Welcome from "./Comp/WelcomeLogin/Welcome";
 import DispGame from "./Comp/GameUI/DispGame";
 
 function App() {
-  console.log("app render");
+  console.log("App render");
 
-  function testerFunction(){
-    let arr =[]
 
-    for(let i =0;i<30;i++){
-      arr.push(i)
-    }
-
-    return arr.map(()=>{
-      return(
-        <div className="Self-tester-item">
-        Here it is
-      </div>
-      )
-    })
-
-  }
 
   return (
     <SocketProvider>
@@ -49,13 +34,6 @@ function App() {
         </Switch>
       </BrowserRouter>
     </SocketProvider>
-    
-    
-    
-    
-    // <div className="Self-tester-Cont">
-    //   {testerFunction()}
-    // </div>
   );
 }
 

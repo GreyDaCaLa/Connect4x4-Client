@@ -18,7 +18,7 @@ function DispGame() {
 
 
     const dispContent = () =>{
-        console.log(socket,"|",gameRoom,"|",plyrInfo,"|",redirectNum)
+        // console.log(socket,"|",gameRoom,"|",plyrInfo,"|",redirectNum)
         if(!socket || !gameRoom || !plyrInfo || redirectNum){
             return(<Redirect to="/" />)
         }
@@ -41,7 +41,7 @@ function DispGame() {
     const goToMainPage = () => {
         if(socket){
             // setGameRoom();
-            console.log("#####################where am i")  
+            // console.log("#####################where am i")  
             socket.emit("UpdatePlayerInfo_RQ",plyrInfo.name)
         }
         return <Redirect to="/" />;

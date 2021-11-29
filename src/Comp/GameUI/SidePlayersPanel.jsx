@@ -6,8 +6,8 @@ import { Redirect} from "react-router-dom";
 
 
 function SidePlayersPanel() {
-  const {socket, gameRoom, setGameRoom } = useSocket();
-  const {allPlayers,currTurn,gMode } = useGameState()
+  const {socket, gameRoom, setGameRoom,plyrInfo } = useSocket();
+  const {allPlayers,currTurn,gMode,winner } = useGameState()
 
 
 
@@ -20,7 +20,7 @@ function SidePlayersPanel() {
     
     let PColors=["rgb(236, 112, 99)","rgb(93, 173, 226)","rgb(244, 208, 63)","rgb(88, 214, 141)"]
        
-    console.log("#################### the game mode: ",gMode)
+    // console.log("#################### the game mode: ",gMode)
     if(gMode == "reg"){
       PColors=["rgb(236, 112, 99)","rgb(244, 208, 63)"]
 
@@ -68,7 +68,7 @@ function SidePlayersPanel() {
 
   const goBackToPlayerPage=()=>{
 
-    socket.emit("Leave_Game",gameRoom)
+    socket.emit("Leave_Game",gameRoom,plyrInfo.name,winner)
 
     setGameRoom()
 

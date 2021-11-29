@@ -10,6 +10,7 @@ export const checkWinner=(gb)=>{
     let resV=null;
     let resDU=null;
     let resDD=null;
+    let resTIE=null;
     //check vertical wins
     resV=checkVertWin(gb);
 
@@ -20,31 +21,37 @@ export const checkWinner=(gb)=>{
     resDU=checkDiagLRUWin(gb);
     resDD=checkDiagLRDWin(gb);
 
-    console.log("is there a winer???")
+    resTIE = checkTIE(gb);
+
+    // console.log("is there a winer???")
     if(resV){
-        console.log("YES Its:",resV )
+        // console.log("YES Its:",resV )
         // setWinner(resV);
         return(resV)
 
     }else if(resH){
-        console.log("YES Its:",resH )
+        // console.log("YES Its:",resH )
         // setWinner(resH);
         return(resH)
 
     }else if(resDU){
-        console.log("YES Its:",resDU)
+        // console.log("YES Its:",resDU)
         // setWinner(resDU);
         return(resDU)
 
     }
     else if(resDD){
-        console.log("YES Its:",resDD)
+        // console.log("YES Its:",resDD)
         // setWinner(resDD);
         return(resDD)
 
     }
+    else if(resTIE){
+        return resTIE
+
+    }
     else{
-        console.log("No Winner Yet")
+        // console.log("No Winner Yet")
         return 0
     }
 
@@ -58,7 +65,7 @@ const plrInSlot=(plyr,slot)=>{
 }
 
 const checkVertWin=(gb)=>{
-    console.log("====checkVertWin")
+    // console.log("====checkVertWin")
     // let winner = null;
     const players = ['1','2','3','4'];
 
@@ -66,7 +73,7 @@ const checkVertWin=(gb)=>{
         for(let ri=5;ri>2;ri--){
             for(let ci=0;ci<gb.length;ci++){
                 // console.log("")
-                console.log(`plyr:${plyr} | ci:${ci} | ri:${ri}`)
+                // console.log(`plyr:${plyr} | ci:${ci} | ri:${ri}`)
                 if(plrInSlot(plyr,gb[ci][ri]) &&
                 plrInSlot(plyr,gb[ci][ri-1]) && 
                 plrInSlot(plyr,gb[ci][ri-2]) && 
@@ -85,7 +92,7 @@ const checkVertWin=(gb)=>{
 }
 
 const checkHorzWin=(gb)=>{
-    console.log("====checkHorzDWin")
+    // console.log("====checkHorzDWin")
     // let winner = null;
     const players = ['1','2','3','4'];
 
@@ -102,7 +109,7 @@ const checkHorzWin=(gb)=>{
         for(let ri=5;ri>-1;ri--){
             for(let ci=0;ci<4;ci++){
                 // console.log("")
-                console.log(`plyr:${plyr} | ci:${ci} | ri:${ri}`)
+                // console.log(`plyr:${plyr} | ci:${ci} | ri:${ri}`)
                 if(plrInSlot(plyr,gb[ci][ri]) &&
                 plrInSlot(plyr,gb[ci+1][ri]) && 
                 plrInSlot(plyr,gb[ci+2][ri]) && 
@@ -121,7 +128,7 @@ const checkHorzWin=(gb)=>{
 }
 
 const checkDiagLRUWin=(gb)=>{
-    console.log("====checkDiagLRUWin")
+    // console.log("====checkDiagLRUWin")
     const players = ['1','2','3','4'];
 
     // let boardslots=[
@@ -137,7 +144,7 @@ const checkDiagLRUWin=(gb)=>{
         for(let ri=5;ri>2;ri--){
             for(let ci=0;ci<4;ci++){
                 // console.log("")
-                console.log(`plyr:${plyr} | ci:${ci} | ri:${ri}`)
+                // console.log(`plyr:${plyr} | ci:${ci} | ri:${ri}`)
                 if(plrInSlot(plyr,gb[ci][ri]) &&
                 plrInSlot(plyr,gb[ci+1][ri-1]) && 
                 plrInSlot(plyr,gb[ci+2][ri-2]) && 
@@ -156,7 +163,7 @@ const checkDiagLRUWin=(gb)=>{
 }
 
 const checkDiagLRDWin=(gb)=>{
-    console.log("====checkDiagLRDWin")
+    // console.log("====checkDiagLRDWin")
     // let winner = null;
     const players = ['1','2','3','4'];
 
@@ -173,7 +180,7 @@ const checkDiagLRDWin=(gb)=>{
         for(let ri=5;ri>2;ri--){
             for(let ci=6;ci>2;ci--){
                 // console.log("")
-                console.log(`plyr:${plyr} | ci:${ci} | ri:${ri}`)
+                // console.log(`plyr:${plyr} | ci:${ci} | ri:${ri}`)
                 if(plrInSlot(plyr,gb[ci][ri]) &&
                 plrInSlot(plyr,gb[ci-1][ri-1]) && 
                 plrInSlot(plyr,gb[ci-2][ri-2]) && 
@@ -186,4 +193,24 @@ const checkDiagLRDWin=(gb)=>{
     }
 
     return null
+}
+
+const checkTIE=(gb)=>{
+
+    let over = true;
+    
+    for(let ci=6;ci>-1;ci--){
+        if(gb[ci][0][0] =='-' || gb[ci][0][1]== '-'){
+            over = false
+        }
+    }
+    
+
+    if(over){
+        return '-'
+    }
+    else{
+        return null
+    }
+
 }
